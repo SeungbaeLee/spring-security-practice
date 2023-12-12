@@ -1,11 +1,16 @@
 package com.example.security.controller;
 
+import com.example.security.auth.PrincipalDetails;
 import com.example.security.model.User;
 import com.example.security.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.Mapping;
@@ -21,6 +26,22 @@ public class IndexController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @GetMapping("/test/login")
+    public @ResponseBody String loginTest(Authentication authentication, @AuthenticationPrincipal UserDetails userDetails) {
+        System.out.println("/test/login ==============");
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        System.out.println("authentication : " + principalDetails.getUser());
+        return " 세션정보 확인하기 ";
+    }
+
+    @GetMapping("/test/oauth")
+    public @ResponseBody String testOAuthLogin(Authentication authentication) {
+        System.out.println("/test/login ==============");
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        System.out.println("authentication : " + oAuth2User.getAttributes());
+        return "OAuth 세션정보 확인하기 ";
+    }
+
     @GetMapping({"", "/"})
     public String index() {
         //머스테치 기본폴더 src/main/resources/
@@ -28,7 +49,8 @@ public class IndexController {
     }
 
     @GetMapping("/user")
-    public @ResponseBody String user() {
+    public @ResponseBody String user(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        System.out.println("principalDetails : " + principalDetails.getUser());
         return "user";
     }
 
