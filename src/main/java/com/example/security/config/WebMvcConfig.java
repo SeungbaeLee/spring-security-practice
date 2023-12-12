@@ -17,5 +17,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         resolver.setSuffix(".html");
 
         registry.viewResolver(resolver);
+
     }
 }

@@ -62,6 +62,7 @@ public class IndexController {
         return "redirect:/loginForm";
     }
 
+
     @Secured("ROLE_ADMIN")//권한 하나만 걸고싶을떄
     @GetMapping("/info")
     public @ResponseBody String info() {
